@@ -1,0 +1,142 @@
+{
+  "version": "1.0",
+  "encoding": "UTF-8",
+  "feed": {
+    "id": { "$t": "tag:blogger.com,1999:blog-1234567890123456789" },
+    "updated": { "$t": "2024-05-02T09:00:00+07:00" },
+    "title": { "type": "text", "$t": "Example Blogspot" },
+    "subtitle": { "type": "html", "$t": "A fixture blog" },
+    "link": [
+      {
+        "rel": "self",
+        "type": "application/atom+xml",
+        "href": "https://example.blogspot.com/feeds/posts/default?alt=json&max-results=3&start-index=1"
+      },
+      {
+        "rel": "alternate",
+        "type": "text/html",
+        "href": "https://example.blogspot.com/"
+      },
+      {
+        "rel": "next",
+        "type": "application/atom+xml",
+        "href": "https://www.blogger.com/feeds/1234567890123456789/posts/default?alt=json&start-index=4&max-results=3"
+      }
+    ],
+    "author": [
+      {
+        "name": { "$t": "Example Author" },
+        "uri": { "$t": "https://www.blogger.com/profile/0000000000000000000" },
+        "gd$image": {
+          "src": "https://lh3.googleusercontent.com/a/ACg8ocExample=s40-c",
+          "width": "32",
+          "height": "32"
+        }
+      }
+    ],
+    "openSearch$totalResults": { "$t": "25" },
+    "openSearch$startIndex": { "$t": "1" },
+    "openSearch$itemsPerPage": { "$t": "3" },
+    "entry": [
+      {
+        "id": { "$t": "tag:blogger.com,1999:blog-1234567890123456789.post-1111111111111111111" },
+        "published": { "$t": "2024-05-01T00:30:00+07:00" },
+        "updated": { "$t": "2024-05-02T09:00:00+07:00" },
+        "title": { "type": "text", "$t": "Timezone probe post" },
+        "content": {
+          "$t": "<div class=\"separator\" style=\"clear: both; text-align: center;\"><a href=\"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhero/s1600/hero.jpg\" imageanchor=\"1\" style=\"margin-left: 1em; margin-right: 1em;\"><img border=\"0\" src=\"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhero/s1600/hero.jpg\" width=\"320\" height=\"240\" alt=\"Hero shot\" /></a></div><p>Hello <b>world</b>, this is the first post.</p><p>Second paragraph with a few more words to read.</p>"
+        },
+        "link": [
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://example.blogspot.com/2024/05/timezone-probe.html",
+            "title": "Timezone probe post"
+          },
+          {
+            "rel": "self",
+            "type": "application/atom+xml",
+            "href": "https://example.blogspot.com/feeds/1111111111111111111/posts/default?alt=json"
+          },
+          {
+            "rel": "replies",
+            "type": "application/atom+xml",
+            "href": "https://example.blogspot.com/feeds/1111111111111111111/comments/default?alt=json"
+          }
+        ],
+        "author": [
+          {
+            "name": { "$t": "Example Author" },
+            "uri": { "$t": "https://www.blogger.com/profile/0000000000000000000" },
+            "gd$image": { "src": "https://lh3.googleusercontent.com/a/ACg8ocExample=s40-c" }
+          }
+        ],
+        "media$thumbnail": {
+          "url": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhero/s72-c/hero.jpg",
+          "width": "72",
+          "height": "72"
+        },
+        "category": [{ "term": "Tech" }, { "term": "Life" }],
+        "thr$total": { "$t": "3" }
+      },
+      {
+        "id": { "$t": "tag:blogger.com,1999:blog-1234567890123456789.post-2222222222222222222" },
+        "published": { "$t": "2024-02-29T23:30:00-05:00" },
+        "updated": { "$t": "2024-03-01T08:00:00-05:00" },
+        "title": { "type": "text", "$t": "Leap day note" },
+        "content": {
+          "$t": "<p>Intro paragraph before an external image.</p><img src=\"https://cdn.example.net/first.jpg\" alt=\"External\" /><div class=\"separator\"><img src=\"https://1.bp.blogspot.com/-abc/XYZ/AAA/BBB/s640/second.jpg\" alt=\"Second\" /></div>"
+        },
+        "link": [
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://example.blogspot.com/2024/02/winter-note.html",
+            "title": "Leap day note"
+          }
+        ],
+        "author": [
+          {
+            "name": { "$t": "Example Author" },
+            "uri": { "$t": "https://www.blogger.com/profile/0000000000000000000" }
+          }
+        ],
+        "media$thumbnail": {
+          "url": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvX/s72-c/other.jpg",
+          "width": "72",
+          "height": "72"
+        },
+        "category": [{ "term": "Photos" }],
+        "thr$total": { "$t": "1" }
+      },
+      {
+        "id": { "$t": "tag:blogger.com,1999:blog-1234567890123456789.post-3333333333333333333" },
+        "published": { "$t": "2023-12-10T10:00:00+07:00" },
+        "updated": { "$t": "2023-12-10T10:00:00+07:00" },
+        "title": { "type": "text", "$t": "Text only post" },
+        "content": {
+          "$t": "<p>No images here, just text.</p><div></div>"
+        },
+        "link": [
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://example.blogspot.com/2023/12/text-only-post.html",
+            "title": "Text only post"
+          }
+        ],
+        "author": [
+          {
+            "name": { "$t": "Second Author" },
+            "uri": { "$t": "https://www.blogger.com/profile/1111111111111111111" }
+          }
+        ],
+        "media$thumbnail": {
+          "url": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvX/s72-c/thumb.jpg",
+          "width": "72",
+          "height": "72"
+        }
+      }
+    ]
+  }
+}

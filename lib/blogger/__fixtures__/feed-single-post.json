@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "encoding": "UTF-8",
+  "entry": {
+    "id": { "$t": "tag:blogger.com,1999:blog-1234567890123456789.post-6666666666666666666" },
+    "published": { "$t": "2024-03-20T14:00:00+07:00" },
+    "updated": { "$t": "2024-03-21T09:30:00+07:00" },
+    "title": { "type": "text", "$t": "Bare single entry" },
+    "content": {
+      "$t": "<p>A single post returned as a bare entry document.</p>"
+    },
+    "link": [
+      {
+        "rel": "alternate",
+        "type": "text/html",
+        "href": "https://example.blogspot.com/2024/03/single.html"
+      }
+    ],
+    "author": [{ "name": { "$t": "Solo Author" } }],
+    "category": [{ "term": "Single" }],
+    "thr$total": { "$t": "5" }
+  }
+}

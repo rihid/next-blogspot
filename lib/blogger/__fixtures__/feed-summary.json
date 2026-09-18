@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "encoding": "UTF-8",
+  "feed": {
+    "id": { "$t": "tag:blogger.com,1999:blog-1234567890123456789" },
+    "updated": { "$t": "2024-07-15T12:00:00+07:00" },
+    "title": { "type": "text", "$t": "Summary Mode Blog" },
+    "link": [
+      {
+        "rel": "self",
+        "type": "application/atom+xml",
+        "href": "https://example.blogspot.com/feeds/posts/default?alt=json&max-results=2&start-index=1"
+      },
+      {
+        "rel": "alternate",
+        "type": "text/html",
+        "href": "https://example.blogspot.com/"
+      },
+      {
+        "rel": "next",
+        "type": "application/atom+xml",
+        "href": "https://www.blogger.com/feeds/1234567890123456789/posts/default?alt=json&start-index=3&max-results=2"
+      }
+    ],
+    "openSearch$totalResults": { "$t": "8" },
+    "openSearch$startIndex": { "$t": "1" },
+    "openSearch$itemsPerPage": { "$t": "2" },
+    "entry": [
+      {
+        "id": { "$t": "tag:blogger.com,1999:blog-1234567890123456789.post-4444444444444444444" },
+        "published": { "$t": "2024-07-15T10:00:00+07:00" },
+        "updated": { "$t": "2024-07-15T10:00:00+07:00" },
+        "title": { "type": "text", "$t": "Summary entry one" },
+        "summary": {
+          "$t": "<p>This body is truncated by Blogger because the blog uses the Summary site feed setting.</p>"
+        },
+        "link": [
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://example.blogspot.com/2024/07/summary-one.html"
+          }
+        ],
+        "author": [{ "name": { "$t": "Summary Author" } }],
+        "category": [{ "term": "Notes" }],
+        "thr$total": { "$t": "0" }
+      },
+      {
+        "id": { "$t": "tag:blogger.com,1999:blog-1234567890123456789.post-5555555555555555555" },
+        "published": { "$t": "2024-06-02T10:00:00+07:00" },
+        "updated": { "$t": "2024-06-02T10:00:00+07:00" },
+        "title": { "type": "text", "$t": "Summary entry two" },
+        "summary": { "$t": "<p>Another truncated body.</p>" },
+        "link": [
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://example.blogspot.com/2024/06/summary-two.html"
+          }
+        ],
+        "author": [{ "name": { "$t": "Summary Author" } }]
+      }
+    ]
+  }
+}

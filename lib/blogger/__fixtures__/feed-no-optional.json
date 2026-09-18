@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "encoding": "UTF-8",
+  "feed": {
+    "id": { "$t": "tag:blogger.com,1999:blog-1234567890123456789" },
+    "updated": { "$t": "2024-01-05T08:00:00+07:00" },
+    "title": { "type": "text", "$t": "No Optional Fields Blog" },
+    "link": [
+      {
+        "rel": "alternate",
+        "type": "text/html",
+        "href": "https://example.blogspot.com/"
+      }
+    ],
+    "openSearch$totalResults": { "$t": "1" },
+    "openSearch$startIndex": { "$t": "1" },
+    "openSearch$itemsPerPage": { "$t": "10" },
+    "entry": [
+      {
+        "id": { "$t": "tag:blogger.com,1999:blog-1234567890123456789.post-7777777777777777777" },
+        "published": { "$t": "2024-01-04T08:00:00+07:00" },
+        "updated": { "$t": "2024-01-04T08:00:00+07:00" },
+        "title": { "type": "text", "$t": "Bare post" },
+        "content": { "$t": "<p>No labels, no comment count, no thumbnail, no image.</p>" },
+        "link": [
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://example.blogspot.com/2024/01/bare.html"
+          }
+        ],
+        "author": [{ "name": { "$t": "Bare Author" } }]
+      }
+    ]
+  }
+}
