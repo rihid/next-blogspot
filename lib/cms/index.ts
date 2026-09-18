@@ -5,10 +5,12 @@
  * private implementation detail; no page may branch on "feed vs API".
  */
 
+import { createApiClient } from "@/lib/blogger/client";
+import { createCommentsClient } from "@/lib/blogger/comments";
 import { createFeedClient } from "@/lib/blogger/feed";
 
 import { buildCapabilityReport } from "./capabilities";
-import { BLOG_URL, CMS_MODE } from "./config";
+import { BLOG_URL, BLOGGER_API_KEY, BLOGGER_BLOG_ID, CMS_MODE } from "./config";
 import type { CmsCapabilities, CmsProvider } from "./types";
 
 export type {
@@ -56,7 +58,8 @@ function warnOnce(key: string, message: string): void {
 
 function createFeedProvider(): CmsProvider {
   const client = createFeedClient({ baseUrl: BLOG_URL });
-  const capabilities: CmsCapabilities = buildCapabilityReport(CMS_MODE);
+  const comments = createCommentsClient({ baseUrl: BLOG_URL });
+  const capabilities: CmsCapabilities = buildCapabilityReport("feed");
 
   const syncContentMode = (): void => {
     if (!capabilities.fullContent || client.isFullContent()) return;
@@ -85,6 +88,27 @@ function createFeedProvider(): CmsProvider {
     getAllPostPaths: () => client.getAllPostPaths(),
     getFeedUpdatedAt: () => client.getFeedUpdatedAt(),
     listLabels: () => client.listLabels(),
+    listComments: (postId) => comments.listComments(postId),
+    getBlogMeta: () => client.getBlogMeta(),
+  };
+}
+
+function createApiProvider(): CmsProvider {
+  const client = createApiClient({
+    apiKey: BLOGGER_API_KEY,
+    blogId: BLOGGER_BLOG_ID,
+    blogUrl: BLOG_URL,
+  });
+
+  return {
+    capabilities: buildCapabilityReport("api"),
+    listPosts: (options) => client.listPosts(options),
+    getPost: (path) => client.getPost(path),
+    getAllPostPaths: () => client.getAllPostPaths(),
+    getFeedUpdatedAt: () => client.getFeedUpdatedAt(),
+    listLabels: () => client.listLabels(),
+    listPages: () => client.listPages(),
+    listComments: (postId) => client.listComments(postId),
     getBlogMeta: () => client.getBlogMeta(),
   };
 }
@@ -94,13 +118,6 @@ let cached: CmsProvider | null = null;
 export function getCms(): CmsProvider {
   if (cached) return cached;
 
-  if (CMS_MODE === "api") {
-    warnOnce(
-      "api-mode",
-      "BLOGGER_API_KEY detected. The Blogger API v3 provider arrives in Phase 2; using the keyless public feed for now.",
-    );
-  }
-
-  cached = createFeedProvider();
+  cached = CMS_MODE === "api" ? createApiProvider() : createFeedProvider();
   return cached;
 }

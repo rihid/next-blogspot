@@ -57,3 +57,12 @@ export const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET ?? "";
 
 /** Data mode is derived, never configured directly. */
 export const CMS_MODE: "api" | "feed" = BLOGGER_API_KEY ? "api" : "feed";
+
+export const GISCUS = {
+  repo: process.env.NEXT_PUBLIC_GISCUS_REPO ?? "",
+  repoId: process.env.NEXT_PUBLIC_GISCUS_REPO_ID ?? "",
+  category: process.env.NEXT_PUBLIC_GISCUS_CATEGORY ?? "",
+  categoryId: process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID ?? "",
+} as const;
+
+export const GISCUS_ENABLED = GISCUS.repo.length > 0 && GISCUS.repoId.length > 0;
