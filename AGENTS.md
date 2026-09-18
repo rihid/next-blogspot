@@ -36,20 +36,26 @@ If `pnpm build` fails with a Pages-Router-style error such as `Cannot find modul
 
 ```
 app/                          # routes only; thin, no data logic
+components/                   # server components, plus client components for Giscus and search
 lib/cms/
   config.ts                   # the ONLY place env vars are read
-  index.ts                    # public entry: getCms() -> CmsProvider
+  index.ts                    # public entry: getCms() -> CmsProvider (feed or API v3)
   types.ts                    # CmsProvider, capabilities, normalized domain types
   capabilities.ts             # capability report + typed unsupported() error
+  revalidate.ts               # constant-time secret compare + request body parsing
+  rate-limit.ts               # in-memory limiter for the API routes
 lib/blogger/                  # PRIVATE implementation; never imported outside lib/cms
-  client.ts                   # API v3: server-only key, retry/backoff, pageToken
+  http.ts                     # shared fetch: cache tags, retry/backoff, concurrency guard
+  client.ts                   # API v3: server-only key, pageToken, bypath, pages
   feed.ts                     # keyless public feed: alt=json, follows rel=next
-  comments.ts                 # per-post comment feed
+  comments.ts                 # keyless per-post comment feed
   normalize.ts                # strip scaffolding, excerpt, readingTime, hero image
   images.ts                   # Google resize-param helpers + host allowlist
   legacy-url.ts               # parse/emit /YYYY/MM/slug.html, /p/slug.html, ...
   types.ts                    # raw Blogger shapes
 lib/seo/                      # metadata, JSON-LD, RSS
+docs/                         # migration, deployment, revalidation
+packages/create-next-blogspot # scaffolder; its template/ is generated, never edited
 ```
 
 ### Module boundaries (hard rule)
@@ -72,6 +78,8 @@ lib/seo/                      # metadata, JSON-LD, RSS
 8. **`BLOGGER_API_KEY` is server-only.** Never reference it from client components.
 9. **`REVALIDATE_SECRET` is compared with `crypto.timingSafeEqual`.**
 10. **Tag scheme:** `posts` (coarse, on every CMS fetch) + `post-{id}` (detail) + `posts-list` (listings/labels). No per-label tags.
+11. **Comment feeds encode the comment id in the entry `id`'s `.post-` slot**, and the post id in `thr$in-reply-to.ref`. The feed carries no parent pointer, so `Comment.inReplyTo` stays `null` in feed mode.
+12. **Generated output is never edited or committed:** `public/pagefind/` (Pagefind index) and `packages/create-next-blogspot/template/` (scaffolder snapshot). The latter is produced by `scripts/prepare-template.mjs`.
 
 ---
 
@@ -103,4 +111,4 @@ Full detail: [`PRD.md`](./PRD.md) §6.
 
 ## Where to start
 
-See [`PRD.md`](./PRD.md) §21 (Executable Task Breakdown) and stay inside the current phase. Phase 1 tasks 1–5 are: feed client, legacy routes, listings, SEO suite, revalidation.
+See [`PRD.md`](./PRD.md) §21 (Executable Task Breakdown) and stay inside the current phase. Phases 1 and 2 are implemented (data layer, legacy routes, listings, SEO suite, revalidation, hybrid comments, Pagefind search, scaffolder, docs). Phase 3 is draft preview and publishing via owner OAuth — it does not exist yet.

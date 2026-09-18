@@ -4,7 +4,7 @@ A headless blog frontend for **Google Blogger / Blogspot**, built with **Next.js
 
 Keep writing in Blogger (including the mobile app) and serve a modern, fast site — **without losing your existing URLs, SEO, or comment history**.
 
-> Status: **Phase 0 (scaffold)**. The Blogger data layer, legacy routes, SEO suite, and revalidation land in Phase 1. See [`PRD.md`](./PRD.md) for the full plan.
+> Status: **Phases 1–2 implemented** — data layer, legacy routes, SEO suite, revalidation, hybrid comments, Pagefind search, and the `create-next-blogspot` scaffolder. See [`PRD.md`](./PRD.md) for the roadmap.
 
 ---
 
@@ -17,7 +17,8 @@ Blogger is a great writing tool with a dated frontend. Migrating away usually me
   `/YYYY/MM/slug.html`, `/p/slug.html`, `/search/label/{Label}`.
 - **SEO migration kit.** Self-referential canonicals, sitemap, RSS, JSON-LD, dynamic Open Graph images.
 - **Comment history preserved.** Legacy Blogger comments are readable without an API key, via the per-post comment feed. New comments use Giscus.
-- **Auto-upgrade.** Add an API key and the data layer transparently gains pages, richer image metadata, and higher pagination caps.
+- **Search included.** A Pagefind index is generated on every build from prerendered pages.
+- **Auto-upgrade.** Add an API key and the data layer transparently gains pages, comment threads with parent pointers, richer image metadata, and higher pagination caps.
 - **Deployment-neutral.** Runs on Vercel, Netlify, or self-hosted Node.
 
 ---
@@ -33,8 +34,16 @@ Blogger is a great writing tool with a dated frontend. Migrating away usually me
 ## Quickstart
 
 ```bash
-git clone <this-repo> next-blogspot
-cd next-blogspot
+npx create-next-blogspot my-blog
+cd my-blog
+pnpm dev
+```
+
+The scaffolder asks for your Blogger URL, probes the feed, reports the detected capabilities, writes `.env.local` (including a generated `REVALIDATE_SECRET`), and initialises git.
+
+Or start from this repository directly:
+
+```bash
 corepack enable
 pnpm install
 
@@ -87,7 +96,7 @@ One internal interface, two backends. Mode is derived from `BLOGGER_API_KEY`.
 | Command | Description |
 |---|---|
 | `pnpm dev` | Start the dev server (Turbopack). |
-| `pnpm build` | Production build. |
+| `pnpm build` | Production build, then generates the Pagefind search index. |
 | `pnpm start` | Serve the production build. |
 | `pnpm lint` | ESLint. |
 | `pnpm typecheck` | `tsc --noEmit`. |
@@ -115,9 +124,9 @@ lib/seo/                  # Metadata, JSON-LD, RSS
 |---|---|
 | [`PRD.md`](./PRD.md) | Product requirements, verified Blogger constraints, architecture, migration playbook, roadmap. |
 | [`AGENTS.md`](./AGENTS.md) | Architecture map, invariants, and commands for contributors and AI agents. |
-| `docs/MIGRATION.md` | Planned (Phase 2): domain migration playbook, noindex sequencing. |
-| `docs/DEPLOYMENT.md` | Planned (Phase 2): deployment matrix and gotchas. |
-| `docs/REVALIDATION.md` | Planned (Phase 2): TTL, `/api/revalidate`, `/api/sync`, cron recipes. |
+| `docs/MIGRATION.md` | Domain migration playbook: two scenarios, noindex sequencing, SEO checklist. |
+| `docs/DEPLOYMENT.md` | Deployment matrix, build pipeline (Pagefind), self-hosting gotchas. |
+| `docs/REVALIDATION.md` | TTL, `/api/revalidate`, `/api/sync`, and cron recipes. |
 
 ---
 
