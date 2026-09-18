@@ -28,6 +28,8 @@ pnpm test:watch       # Vitest (watch)
 
 Run `pnpm lint && pnpm typecheck && pnpm test && pnpm build` before declaring work complete.
 
+If `pnpm build` fails with a Pages-Router-style error such as `Cannot find module for page: /_document`, remove the stale build cache (`rm -rf .next`) — `pnpm dev` uses Turbopack and can leave a cache the webpack build cannot reuse.
+
 ---
 
 ## Architecture map

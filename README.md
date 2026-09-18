@@ -52,10 +52,12 @@ Open <http://localhost:3000>.
 | Variable | Required | Purpose |
 |---|---|---|
 | `BLOG_URL` | ✅ | Your blog URL (`https://example.blogspot.com` or a custom domain). |
+| `NEXT_PUBLIC_SITE_URL` | ✅ in production | Frontend origin used for canonicals, sitemap and RSS. Never the Blogger origin. |
 | `BLOGGER_BLOG_ID` | — | Numeric blog ID. Resolved from `BLOG_URL` when omitted. |
 | `BLOGGER_API_KEY` | — | Enables the Blogger API v3 data mode (pages, images, 500-per-page). |
 | `REVALIDATE_SECRET` | ✅ for revalidation | Shared secret for `POST /api/revalidate` and `POST /api/sync`. Generate with `openssl rand -hex 32`. |
 | `REVALIDATE_TTL` | — | ISR fallback TTL in seconds. Default `3600`. |
+| `PRERENDER_POST_LIMIT` | — | Newest posts prerendered at build time; the rest render on demand via ISR. Default `25`. Set `0` to prerender nothing. |
 | `NEXT_PUBLIC_GISCUS_*` | — | Giscus (new comments). Values from <https://giscus.app>. |
 
 ---
