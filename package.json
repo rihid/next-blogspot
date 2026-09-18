@@ -15,7 +15,8 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "postbuild": "pagefind --site .next/server/app --output-path public/pagefind"
   },
   "dependencies": {
     "next": "15.5.25",
@@ -38,6 +39,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.25",
     "jsdom": "^30.1.0",
+    "pagefind": "^1.5.2",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.0.1"
