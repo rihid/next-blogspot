@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { Comments } from "@/components/comments";
 import { buildLabelHref, buildPostPath, getCms, parsePostPath } from "@/lib/cms";
 import { PRERENDER_POST_LIMIT } from "@/lib/cms/config";
 import { buildArticleJsonLd } from "@/lib/seo/jsonld";
@@ -54,7 +55,7 @@ export default async function PostPage({ params }: { params: Promise<PostRoutePa
   const published = formatDisplayDate(post.published);
 
   return (
-    <article className="flex flex-col gap-6">
+    <article data-pagefind-body className="flex flex-col gap-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -99,6 +100,8 @@ export default async function PostPage({ params }: { params: Promise<PostRoutePa
         className="prose prose-neutral max-w-none"
         dangerouslySetInnerHTML={{ __html: post.html }}
       />
+
+      <Comments postId={post.id} />
     </article>
   );
 }
