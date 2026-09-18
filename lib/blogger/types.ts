@@ -106,3 +106,39 @@ export function isSingleEntryDocument(
 ): document is SingleEntryDocument {
   return "entry" in document && !("feed" in document);
 }
+
+/**
+ * Comment feeds encode the *comment* id in the entry id's `.post-` slot, while
+ * `thr$in-reply-to.ref` carries the *post* id. The feed exposes no parent
+ * pointer, so replies cannot be threaded from it.
+ */
+export type FeedCommentEntry = {
+  id: TextValue;
+  published?: TextValue;
+  updated?: TextValue;
+  title?: TextValue;
+  content?: TextValue;
+  author?: FeedAuthor[];
+  link?: FeedLink[];
+  "thr$in-reply-to"?: {
+    ref?: string;
+    href?: string;
+    type?: string;
+    source?: string;
+  };
+};
+
+export type FeedCommentChannel = {
+  id?: TextValue;
+  link?: FeedLink[];
+  "openSearch$totalResults"?: TextValue;
+  "openSearch$startIndex"?: TextValue;
+  "openSearch$itemsPerPage"?: TextValue;
+  entry?: FeedCommentEntry[];
+};
+
+export type FeedCommentsDocument = {
+  version?: string;
+  encoding?: string;
+  feed: FeedCommentChannel;
+};

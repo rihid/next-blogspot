@@ -1,0 +1,86 @@
+{
+  "version": "1.0",
+  "encoding": "UTF-8",
+  "feed": {
+    "id": { "$t": "tag:blogger.com,1999:blog-2399953.post-6308520619353739916" },
+    "updated": { "$t": "2012-09-12T10:00:00.000-07:00" },
+    "title": { "type": "text", "$t": "Comments for Reactions" },
+    "link": [
+      {
+        "rel": "alternate",
+        "type": "text/html",
+        "href": "https://example.blogspot.com/2008/11/reactions.html"
+      }
+    ],
+    "openSearch$totalResults": { "$t": "2" },
+    "openSearch$startIndex": { "$t": "1" },
+    "openSearch$itemsPerPage": { "$t": "150" },
+    "entry": [
+      {
+        "id": { "$t": "tag:blogger.com,1999:blog-2399953.post-1647826227370640772" },
+        "published": { "$t": "2012-09-11T07:48:16.561-07:00" },
+        "updated": { "$t": "2012-09-11T07:48:16.561-07:00" },
+        "title": { "type": "text", "$t": "Is it possible to get a notification" },
+        "content": {
+          "type": "html",
+          "$t": "Is it possible to get some type of notification when they are used?<script>alert(1)</script>"
+        },
+        "link": [
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://example.blogspot.com/2008/11/reactions.html?showComment=1347374896561#c1647826227370640772"
+          }
+        ],
+        "author": [
+          {
+            "name": { "$t": "Jill Flinton" },
+            "uri": { "$t": "https://www.blogger.com/profile/07654761993901288072" },
+            "gd$image": {
+              "rel": "http://schemas.google.com/g/2005#thumbnail",
+              "width": "16",
+              "height": "16",
+              "src": "https://img1.blogblog.com/img/b16-rounded.gif"
+            }
+          }
+        ],
+        "thr$in-reply-to": {
+          "href": "https://example.blogspot.com/2008/11/reactions.html",
+          "ref": "tag:blogger.com,1999:blog-2399953.post-6308520619353739916",
+          "type": "text/html"
+        },
+        "gd$extendedProperty": [
+          { "name": "blogger.itemClass", "value": "pid-982403090" },
+          { "name": "blogger.displayTime", "value": "September 11, 2012 7:48 AM" }
+        ]
+      },
+      {
+        "id": { "$t": "tag:blogger.com,1999:blog-2399953.post-2000000000000000001" },
+        "published": { "$t": "2012-09-12T10:00:00.000-07:00" },
+        "updated": { "$t": "2012-09-12T10:00:00.000-07:00" },
+        "content": { "type": "html", "$t": "<p>Second comment with a real avatar.</p>" },
+        "link": [
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://example.blogspot.com/2008/11/reactions.html#c2000000000000000001"
+          }
+        ],
+        "author": [
+          {
+            "name": { "$t": "Real Person" },
+            "uri": { "$t": "https://www.blogger.com/profile/1111111111111111111" },
+            "gd$image": {
+              "src": "https://lh3.googleusercontent.com/a/ACg8ocReal=s40-c",
+              "width": "32",
+              "height": "32"
+            }
+          }
+        ],
+        "thr$in-reply-to": {
+          "ref": "tag:blogger.com,1999:blog-2399953.post-6308520619353739916"
+        }
+      }
+    ]
+  }
+}
