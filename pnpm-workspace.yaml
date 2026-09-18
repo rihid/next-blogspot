@@ -1,0 +1,5 @@
+# pnpm 11 requires explicit approval before dependencies may run install scripts.
+# Keep this list minimal and reviewed.
+allowBuilds:
+  unrs-resolver: true
+  esbuild: true
