@@ -84,3 +84,20 @@ export function stripMobileParam(rawUrl: string): string | null {
   url.searchParams.delete("m");
   return url.toString();
 }
+
+function safeUrl(rawUrl: string): URL | null {
+  try {
+    return new URL(rawUrl);
+  } catch {
+    return null;
+  }
+}
+
+/** Blog-relative path for a permalink, e.g. `2024/05/slug.html`. */
+export function permalinkPath(href: string): string | null {
+  const url = safeUrl(href);
+  if (!url) return null;
+
+  const path = url.pathname.replace(/^\/+/, "");
+  return path.length > 0 ? path : null;
+}

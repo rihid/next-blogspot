@@ -12,7 +12,6 @@
  *   succeeds with no environment.
  */
 
-import { REVALIDATE_TTL } from "@/lib/cms/config";
 import type {
   Author,
   BlogMeta,
@@ -24,6 +23,8 @@ import type {
   PostSummary,
 } from "@/lib/cms/types";
 
+import { BloggerFeedError, createJsonFetcher, type JsonFetcher } from "./http";
+import { permalinkPath } from "./legacy-url";
 import {
   extractHeroImage,
   makeExcerpt,
@@ -40,26 +41,12 @@ import {
   type TextValue,
 } from "./types";
 
+export { BloggerFeedError, permalinkPath };
+
 export const DEFAULT_MAX_RESULTS_CAP = 150;
 export const DEFAULT_PAGE_SIZE = 10;
 
-const DEFAULT_CONCURRENCY = 3;
-const MAX_RETRIES = 2;
-const BASE_BACKOFF_MS = 100;
 const MAX_ENUMERATION_PAGES = 500;
-
-export class BloggerFeedError extends Error {
-  /** HTTP status, or `0` for network-level failures. */
-  readonly status: number;
-  readonly url: string;
-
-  constructor(message: string, options: { status: number; url: string }) {
-    super(message);
-    this.name = "BloggerFeedError";
-    this.status = options.status;
-    this.url = options.url;
-  }
-}
 
 export type FeedClient = {
   listPosts(options?: ListPostsOptions): Promise<Paged<PostSummary>>;
@@ -78,32 +65,8 @@ export type FeedClientOptions = {
   maxResultsCap?: number;
 };
 
-type CacheInit = RequestInit & {
-  next?: { revalidate: number; tags: string[] };
-};
-
-function cacheInit(tags: string[]): CacheInit {
-  return { next: { revalidate: REVALIDATE_TTL, tags } };
-}
-
 function normalizeBaseUrl(baseUrl: string): string {
   return baseUrl.trim().replace(/\/+$/, "");
-}
-
-function safeUrl(rawUrl: string): URL | null {
-  try {
-    return new URL(rawUrl);
-  } catch {
-    return null;
-  }
-}
-
-/** Blog-relative path for a permalink, e.g. `2024/05/slug.html`. */
-export function permalinkPath(href: string): string | null {
-  const url = safeUrl(href);
-  if (!url) return null;
-  const path = url.pathname.replace(/^\/+/, "");
-  return path.length > 0 ? path : null;
 }
 
 function extractIdAfter(tag: string, marker: string): string | null {
@@ -211,54 +174,10 @@ function emptyBlogMeta(): BlogMeta {
   return { id: "", title: "", description: "", url: "", postCount: null };
 }
 
-function isRetryableStatus(status: number): boolean {
-  return status === 429 || status >= 500;
-}
-
-function backoffMs(attempt: number): number {
-  return BASE_BACKOFF_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * BASE_BACKOFF_MS);
-}
-
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
-/**
- * Small semaphore so a full-blog enumeration cannot burst past Blogger's
- * ~100 requests / 100 seconds guidance.
- */
-function createLimiter(concurrency: number): <T>(task: () => Promise<T>) => Promise<T> {
-  let active = 0;
-  const queue: Array<() => void> = [];
-
-  const release = (): void => {
-    active -= 1;
-    const next = queue.shift();
-    if (next) next();
-  };
-
-  return async function run<T>(task: () => Promise<T>): Promise<T> {
-    if (active >= concurrency) {
-      await new Promise<void>((resolve) => {
-        queue.push(resolve);
-      });
-    }
-    active += 1;
-    try {
-      return await task();
-    } finally {
-      release();
-    }
-  };
-}
-
 export function createFeedClient(options: FeedClientOptions): FeedClient {
   const baseUrl = normalizeBaseUrl(options.baseUrl);
-  const fetchImpl = options.fetchImpl ?? fetch;
+  const fetchJson: JsonFetcher = createJsonFetcher({ fetchImpl: options.fetchImpl });
   const maxResultsCap = options.maxResultsCap ?? DEFAULT_MAX_RESULTS_CAP;
-  const runLimited = createLimiter(DEFAULT_CONCURRENCY);
 
   let fullContent = true;
 
@@ -266,44 +185,8 @@ export function createFeedClient(options: FeedClientOptions): FeedClient {
     if (!hasFullContent) fullContent = false;
   };
 
-  async function requestJson(url: string, tags: string[]): Promise<FeedDocumentResponse> {
-    return runLimited(async () => {
-      let attempt = 0;
-
-      for (;;) {
-        let response: Response;
-        try {
-          response = await fetchImpl(url, cacheInit(tags));
-        } catch (error) {
-          if (attempt < MAX_RETRIES) {
-            attempt += 1;
-            await delay(backoffMs(attempt));
-            continue;
-          }
-          const reason = error instanceof Error ? error.message : "unknown network error";
-          throw new BloggerFeedError(`Blogger feed request failed: ${reason}`, {
-            status: 0,
-            url,
-          });
-        }
-
-        if (response.ok) {
-          return (await response.json()) as FeedDocumentResponse;
-        }
-
-        if (isRetryableStatus(response.status) && attempt < MAX_RETRIES) {
-          attempt += 1;
-          await delay(backoffMs(attempt));
-          continue;
-        }
-
-        throw new BloggerFeedError(
-          `Blogger feed request failed: HTTP ${response.status}`,
-          { status: response.status, url },
-        );
-      }
-    });
-  }
+  const requestJson = (url: string, tags: string[]): Promise<FeedDocumentResponse> =>
+    fetchJson<FeedDocumentResponse>(url, tags);
 
   function buildListUrl(
     page: number,
