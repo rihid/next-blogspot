@@ -1,0 +1,23 @@
+{
+  "name": "create-next-blogspot",
+  "version": "0.1.0",
+  "description": "Scaffold a headless Blogger blog frontend built with Next.js.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "create-next-blogspot": "./index.mjs"
+  },
+  "files": [
+    "index.mjs",
+    "scripts/prepare-template.mjs",
+    "template",
+    "README.md"
+  ],
+  "scripts": {
+    "prepare-template": "node scripts/prepare-template.mjs",
+    "prepack": "node scripts/prepare-template.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
