@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# generated search index
+/public/pagefind
+
 # production
 /build
 
@@ -37,6 +40,9 @@ yarn-error.log*
 # local tooling (not part of the product)
 .omo/
 .codegraph
+
+# generated scaffolder template (produced at pack time)
+/packages/create-next-blogspot/template/
 
 # vercel
 .vercel
