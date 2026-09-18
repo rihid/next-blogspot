@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_REVALIDATE_TTL, resolveRevalidateTtl } from "./config";
+import {
+  DEFAULT_PRERENDER_POST_LIMIT,
+  DEFAULT_REVALIDATE_TTL,
+  resolvePrerenderLimit,
+  resolveRevalidateTtl,
+} from "./config";
 
 describe("resolveRevalidateTtl", () => {
   it("falls back to the default when unset", () => {
@@ -28,5 +33,19 @@ describe("resolveRevalidateTtl", () => {
 
   it("rejects Infinity", () => {
     expect(resolveRevalidateTtl("Infinity")).toBe(DEFAULT_REVALIDATE_TTL);
+  });
+});
+
+describe("resolvePrerenderLimit", () => {
+  it("falls back to the default when unset or invalid", () => {
+    expect(resolvePrerenderLimit(undefined)).toBe(DEFAULT_PRERENDER_POST_LIMIT);
+    expect(resolvePrerenderLimit("")).toBe(DEFAULT_PRERENDER_POST_LIMIT);
+    expect(resolvePrerenderLimit("-5")).toBe(DEFAULT_PRERENDER_POST_LIMIT);
+    expect(resolvePrerenderLimit("lots")).toBe(DEFAULT_PRERENDER_POST_LIMIT);
+  });
+
+  it("accepts zero and positive integers", () => {
+    expect(resolvePrerenderLimit("0")).toBe(0);
+    expect(resolvePrerenderLimit("100")).toBe(100);
   });
 });
