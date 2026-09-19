@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
+
 const PAGE_WINDOW_RADIUS = 1;
 
 export function parsePageParam(value: string | string[] | undefined): number {
@@ -40,34 +42,37 @@ export function Pagination({
   if (totalPages <= 1) return null;
 
   return (
-    <nav aria-label="Pagination" className="flex flex-wrap items-center justify-center gap-2 text-sm">
+    <nav aria-label="Pagination" className="flex flex-wrap items-center justify-center gap-1.5">
       {page > 1 ? (
-        <Link href={hrefForPage(page - 1)} className="px-3 py-1 underline">
-          Previous
-        </Link>
+        <Button variant="outline" size="sm" asChild>
+          <Link href={hrefForPage(page - 1)}>Previous</Link>
+        </Button>
       ) : null}
 
       {pageWindow(page, totalPages).map((value, index) =>
         value === null ? (
-          <span key={`gap-${index}`} className="px-1 text-neutral-400">
+          <span key={`gap-${index}`} className="px-1 text-muted-foreground" aria-hidden>
             …
           </span>
         ) : (
-          <Link
+          <Button
             key={value}
-            href={hrefForPage(value)}
-            aria-current={value === page ? "page" : undefined}
-            className={value === page ? "px-3 py-1 font-semibold" : "px-3 py-1 underline"}
+            variant={value === page ? "default" : "ghost"}
+            size="sm"
+            asChild
+            className="min-w-8 px-2.5"
           >
-            {value}
-          </Link>
+            <Link href={hrefForPage(value)} aria-current={value === page ? "page" : undefined}>
+              {value}
+            </Link>
+          </Button>
         ),
       )}
 
       {page < totalPages ? (
-        <Link href={hrefForPage(page + 1)} className="px-3 py-1 underline">
-          Next
-        </Link>
+        <Button variant="outline" size="sm" asChild>
+          <Link href={hrefForPage(page + 1)}>Next</Link>
+        </Button>
       ) : null}
     </nav>
   );
