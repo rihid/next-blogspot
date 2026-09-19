@@ -12,6 +12,7 @@ export default function NotFound() {
         width={96}
         height={96}
         aria-hidden
+        className="dark:invert"
       />
       <div className="flex flex-col gap-2">
         <p className="text-xs tracking-wider text-muted-foreground uppercase">404</p>
