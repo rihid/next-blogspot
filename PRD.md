@@ -479,8 +479,12 @@ v3 auto-upgrade, pages, legacy comments, Giscus, Pagefind.
 ### Phase 3 — Owner OAuth (preview + publish) — ❌ DEFERRED, not scheduled
 Draft preview and publish-from-frontend via owner OAuth 2.0. Authoring stays in Blogger's backoffice, so this is not needed to ship the template. The research is finished and recorded in **Appendix A** — it does not need repeating.
 
-### Phase 4 — "Template completion" (next)
-Finish the boilerplate: a design pass on the pages, error/loading/empty states, accessibility basics, a migration checker (compare the live Blogger URL set against the built routes), and scaffolder/README polish.
+### Phase 4 — "Template completion" (delivered)
+- ✅ Minimalist design pass on shadcn/ui, with light / dark / system theming wired through `next-themes`.
+- ✅ Error, loading, empty and 404 states.
+- ✅ Accessibility basics: skip link, focus rings, `aria-current`, semantic landmarks.
+- ✅ `check:migration` script comparing the live Blogger URL set against the sitemap, with an optional `--probe` that requests every post URL.
+- ✅ README / AGENTS polish, including the design and migration notes.
 **DoD:** a stranger can scaffold, deploy, and point a custom domain at it using only the docs, and the result looks intentional rather than scaffold-generated.
 
 ---

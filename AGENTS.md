@@ -80,6 +80,8 @@ packages/create-next-blogspot # scaffolder; its template/ is generated, never ed
 10. **Tag scheme:** `posts` (coarse, on every CMS fetch) + `post-{id}` (detail) + `posts-list` (listings/labels). No per-label tags.
 11. **Comment feeds encode the comment id in the entry `id`'s `.post-` slot**, and the post id in `thr$in-reply-to.ref`. The feed carries no parent pointer, so `Comment.inReplyTo` stays `null` in feed mode.
 12. **Generated output is never edited or committed:** `public/pagefind/` (Pagefind index) and `packages/create-next-blogspot/template/` (scaffolder snapshot). The latter is produced by `scripts/prepare-template.mjs`.
+13. **`shadcn` is a runtime dependency.** `app/globals.css` imports `shadcn/tailwind.css`; moving the package to `devDependencies` breaks production installs.
+14. **Placeholder marks use `dark:invert`.** `public/mark.svg` and `public/placeholder.svg` ship a fixed ink colour because `currentColor` does not inherit into an `<img>`; the class is what makes them readable in dark mode.
 
 ---
 
