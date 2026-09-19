@@ -16,6 +16,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "check:migration": "node scripts/check-migration.mjs",
     "postbuild": "pagefind --site .next/server/app --output-path public/pagefind"
   },
   "dependencies": {
@@ -23,6 +24,7 @@
     "cn": "^0.3.0",
     "lucide-react": "^1.47.0",
     "next": "15.5.25",
+    "next-themes": "^0.4.6",
     "radix-ui": "^1.6.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
