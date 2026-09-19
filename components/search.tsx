@@ -58,8 +58,12 @@ export function SearchBox() {
       .catch(() => {
         const container = containerRef.current;
         if (cancelled || !container) return;
-        container.textContent =
+        container.replaceChildren();
+        const message = document.createElement("p");
+        message.className = "text-sm text-muted-foreground";
+        message.textContent =
           "Search index not found. The site must be built before search is available.";
+        container.appendChild(message);
       });
 
     return () => {
