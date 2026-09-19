@@ -4,7 +4,7 @@ A headless blog frontend for **Google Blogger / Blogspot**, built with **Next.js
 
 Keep writing in Blogger (including the mobile app) and serve a modern, fast site — **without losing your existing URLs, SEO, or comment history**.
 
-> Status: **Phases 1–2 implemented** — data layer, legacy routes, SEO suite, revalidation, hybrid comments, Pagefind search, and the `create-next-blogspot` scaffolder. See [`PRD.md`](./PRD.md) for the roadmap.
+> Status: **Phases 0–2 delivered** — data layer, legacy routes, SEO suite, revalidation, hybrid comments, Pagefind search, and the `create-next-blogspot` scaffolder. Phase 4 (template completion) is next. Owner OAuth is deferred — see [PRD Appendix A](./PRD.md).
 
 ---
 
@@ -20,6 +20,7 @@ Blogger is a great writing tool with a dated frontend. Migrating away usually me
 - **Search included.** A Pagefind index is generated on every build from prerendered pages.
 - **Auto-upgrade.** Add an API key and the data layer transparently gains pages, comment threads with parent pointers, richer image metadata, and higher pagination caps.
 - **Deployment-neutral.** Runs on Vercel, Netlify, or self-hosted Node.
+- **No authentication, by design.** There are no accounts, tokens, or consent screens. You write in Blogger, the template only reads.
 
 ---
 

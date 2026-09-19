@@ -111,4 +111,6 @@ Full detail: [`PRD.md`](./PRD.md) §6.
 
 ## Where to start
 
-See [`PRD.md`](./PRD.md) §21 (Executable Task Breakdown) and stay inside the current phase. Phases 1 and 2 are implemented (data layer, legacy routes, listings, SEO suite, revalidation, hybrid comments, Pagefind search, scaffolder, docs). Phase 3 is draft preview and publishing via owner OAuth — it does not exist yet.
+See [`PRD.md`](./PRD.md) §20 (Roadmap). **Phases 0–2 are delivered**: data layer, legacy routes, listings, SEO suite, revalidation, hybrid comments, Pagefind search, scaffolder, and docs. **Phase 4 (template completion) is next.**
+
+Owner OAuth — draft preview and publish-from-frontend — is **deferred on purpose**; see [PRD Appendix A](./PRD.md). The template ships with **no authentication surface**: Blogger's backoffice is the authoring UI. Do not add auth or token-storage code without reading that appendix first.

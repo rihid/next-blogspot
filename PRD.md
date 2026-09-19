@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Product | **next-blogspot** |
-| Status | Reviewed v0.1 — Momus verdict: OKAY (non-blocking notes resolved) |
+| Status | Phases 0–2 delivered. Phase 3 (owner OAuth) **deferred** — see Appendix A. Phase 4 (template completion) is next. |
 | Date | 2026-09-18 |
 | Distribution | `npx create-next-blogspot` |
 | Reference product | `9d8dev/next-wp` (same concept, WordPress backend) |
@@ -50,8 +50,9 @@ The product is **not** a generic "headless CMS template". It is an **upgrade kit
 - ❌ WebSub / PubSubHubbub listener (document only, no code placeholder).
 - ❌ WordPress / Notion / other CMS adapters (interface only, no adapter implementations beyond Blogger).
 - ❌ v3 `posts.search` as an MVP feature (deferred; Pagefind covers MVP).
-- ❌ Draft preview / scheduled post preview (requires owner OAuth) — Phase 3.
-- ❌ Publish-from-frontend (OAuth write path) — Phase 3.
+- ❌ Draft preview / scheduled post preview (requires owner OAuth) — **deferred** (Appendix A).
+- ❌ Publish-from-frontend (OAuth write path) — **deferred** (Appendix A).
+- ❌ Any authentication surface. The template deliberately ships with **zero auth**; Blogger's own admin remains the authoring UI.
 - ❌ Client-side fetching of Blogger feeds (CORS-blocked by design; all fetching is server-side).
 - ❌ i18n / multi-language, memberships, payments, multi-author workflows.
 - ❌ Migrating or importing Blogger comments into a different comment system.
@@ -78,6 +79,7 @@ The product is **not** a generic "headless CMS template". It is an **upgrade kit
 | Scaffolder | Template ships inside the `create-next-blogspot` package | Oracle |
 | Next.js version | **Pin Next.js 15** (avoid Next 16 caching API churn) | User + Oracle |
 | WebSub | Documented only | User |
+| Owner OAuth (preview/publish) | **Deferred** — the template ships with no auth surface | User |
 
 ---
 
@@ -474,17 +476,16 @@ v3 auto-upgrade, pages, legacy comments, Giscus, Pagefind.
 (JSON-LD and dynamic OG are delivered in Phase 1, Task 4.)
 **DoD:** capability report matches matrix; comments and search functional.
 
-### Phase 3 — "Differentiation"
-OAuth draft preview, publish-from-frontend with instant `revalidatePath`.
-**DoD:** documented OAuth setup; publish triggers immediate freshness.
+### Phase 3 — Owner OAuth (preview + publish) — ❌ DEFERRED, not scheduled
+Draft preview and publish-from-frontend via owner OAuth 2.0. Authoring stays in Blogger's backoffice, so this is not needed to ship the template. The research is finished and recorded in **Appendix A** — it does not need repeating.
 
-### Phase 4 — "Product"
-Scaffolder polish, theme presets, one-command deploy docs, migration checker (compare old vs new URL set), docs site.
-**DoD:** `npx create-next-blogspot` against a real blog produces a building, validator-passing app in <5 minutes.
+### Phase 4 — "Template completion" (next)
+Finish the boilerplate: a design pass on the pages, error/loading/empty states, accessibility basics, a migration checker (compare the live Blogger URL set against the built routes), and scaffolder/README polish.
+**DoD:** a stranger can scaffold, deploy, and point a custom domain at it using only the docs, and the result looks intentional rather than scaffold-generated.
 
 ---
 
-## 21. Executable Task Breakdown (Phase 1 → Phase 2)
+## 21. Executable Task Breakdown (Phase 1 → Phase 2) — ✅ all tasks delivered
 
 Phase mapping (resolves §20/§21 overlap):
 
@@ -562,9 +563,10 @@ Each task lists files, deliverable, and definition of done.
 | 1 | Pin Next.js 15 | **Resolved** (user approved) |
 | 2 | `/api/sync` in Phase 1 scope | **Resolved** (included) |
 | 3 | Whether label archive pages should be noindex by default | Open — default indexable, document toggle |
-| 4 | Theme/preset design system default (mirror next-wp's craft-ds or neutral Tailwind) | Open — decide at Phase 2 |
+| 4 | Design system for the template UI | **Open — Phase 4.** The UI is currently bare Tailwind and needs an intentional pass |
 | 5 | Package manager for generated projects (pnpm default vs npm) | Open — pnpm default, document npm fallback |
 | 6 | License (MIT assumed) | Open — confirm MIT |
+| 7 | Owner OAuth (draft preview + publish) | **Deferred** — Appendix A |
 
 ---
 
@@ -579,3 +581,38 @@ A real Blogger blog, configured via `.env.local` only, renders:
 5. `POST /api/revalidate` working with the secret; `POST /api/sync` invocable by cron.
 6. Zero API key required for all of the above (API-key-only features — pages, richer images — belong to Phase 2).
 7. CI green: lint, unit tests, fixture integration tests, revalidation smoke test.
+
+---
+
+## Appendix A — Deferred: owner OAuth (draft preview + publish)
+
+Parked deliberately. Blogger's backoffice stays the authoring UI, and the template intentionally ships with **no authentication surface at all**. The research below was completed on 2026-09-19 and does not need repeating if this is ever picked up.
+
+### Why it was deferred
+
+- It is the only feature that needs the sensitive `https://www.googleapis.com/auth/blogger` scope, which drags a consent screen, verification questions, and a token-storage security surface into a template that otherwise has none.
+- Draft preview requires **the same** OAuth work as publishing — there is no cheaper half. API keys can never read drafts, and service accounts **cannot** be added as blog authors (confirmed by Google), so owner OAuth is the only path.
+- The library landscape is unsettled: Auth.js/next-auth v5 is still beta and was acquired by Better Auth (which needs a database and lists "stateless sessions without a database" as an open gap), **Arctic is deprecated** (July 2026), and Lucia is deprecated. The recommended route is ~150 lines of security-critical code written directly on `jose`.
+
+### Constraints (verified 2026-09-19)
+
+| # | Constraint |
+|---|---|
+| A1 | Scope `blogger` = full read + write; `blogger.readonly` also reads drafts/scheduled as the token's user. Writes require the full scope. |
+| A2 | External consent screen + "Testing" status ⇒ **refresh token expires in 7 days** (the name/email/profile exception does not apply to Blogger scopes). Either publish the project to production or expect weekly re-consent. |
+| A3 | The refresh token is issued **only on first authorization**; `prompt=consent` + `access_type=offline` is how it is re-issued. Limit: 100 refresh tokens per account per client ID, oldest silently invalidated. |
+| A4 | **Service accounts cannot access Blogger.** There is no server-only escape hatch. |
+| A5 | Drafts/scheduled posts are invisible to API keys, and `posts.getByPath` has **no** `status`/`future` params — preview must fetch by **post id** with `view=ADMIN`. Drafts have no usable canonical `url`. |
+| A6 | Scheduling is `posts.publish?publishDate=`; `posts.revert` un-publishes published **or** scheduled posts. |
+| A7 | `posts.update` (PUT) replaces the resource and wipes omitted fields (notably `labels`) — edit with a read-merge-`PATCH`. |
+| A8 | Reads and writes share one quota (≈10k/day/project, ≈100/100s/user); post creation additionally caps around 100/day. |
+| A9 | In Next.js 15.5.25 a draft-mode request bypasses the **entire** fetch cache (`patch-fetch` falls back to native `fetch` when `workStore.isDraftMode`), so draft bodies cannot enter the shared cache. However `revalidateTag`/`revalidatePath` are **not** draft-scoped — never call them from a preview path. |
+| A10 | `cache: 'no-store'` combined with `next: { revalidate }` is invalid (both are ignored). A preview fetch must drop the `next` block entirely rather than add `no-store` on top. |
+
+### Design sketch, if it is ever built
+
+- `lib/oauth/` (private, like `lib/blogger/`): authorize-URL builder, callback verifier, JWE session cookie, token refresher, revoke.
+- `jose` only — `EncryptJWT` with `dir` + `A256GCM`, `createRemoteJWKSet` to verify the Google ID token, and an owner allowlist keyed on the stable `sub` claim (not email).
+- Cookies: `httpOnly`, `secure` in production, `sameSite: 'lax'`, host-only, finite `maxAge`; `state` + PKCE verifier in a separate single-use short-TTL cookie destroyed before the code is trusted.
+- Preview route: `app/preview/[postId]` (keyed by post id), `noindex`, reads `draftMode()`, and reuses the existing normalize/sanitize pipeline; plus a banner and a `POST` exit route.
+- No auth or token code ever reaches a client component.
