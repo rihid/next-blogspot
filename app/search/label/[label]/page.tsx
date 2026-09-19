@@ -35,14 +35,14 @@ export default async function LabelPage({
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-2">
-        <p className="text-xs uppercase tracking-wide text-neutral-500">Label</p>
-        <h1 className="text-3xl font-bold">{label}</h1>
+        <p className="text-xs tracking-wide text-muted-foreground uppercase">Label</p>
+        <h1 className="text-3xl font-semibold tracking-tight">{label}</h1>
       </div>
 
       {posts.items.length === 0 ? (
-        <p className="text-neutral-600">No posts use this label.</p>
+        <p className="text-muted-foreground">No posts use this label.</p>
       ) : (
-        <section className="grid gap-8 sm:grid-cols-2">
+        <section className="grid gap-4 sm:grid-cols-2">
           {posts.items.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}

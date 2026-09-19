@@ -20,12 +20,12 @@ export default async function PostsPage({ searchParams }: { searchParams: Search
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-3xl font-bold">All posts</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">All posts</h1>
 
       {posts.items.length === 0 ? (
-        <p className="text-neutral-600">Nothing published yet.</p>
+        <p className="text-muted-foreground">Nothing published yet.</p>
       ) : (
-        <section className="grid gap-8 sm:grid-cols-2">
+        <section className="grid gap-4 sm:grid-cols-2">
           {posts.items.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
