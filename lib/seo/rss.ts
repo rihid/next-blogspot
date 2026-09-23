@@ -1,4 +1,5 @@
 import type { BlogMeta, PostSummary } from "@/lib/cms";
+import { encodePostPath } from "@/lib/cms";
 import { SITE_URL } from "@/lib/cms/config";
 
 export function escapeXml(value: string): string {
@@ -11,7 +12,7 @@ export function escapeXml(value: string): string {
 }
 
 function absoluteUrl(path: string): string {
-  return `${SITE_URL}/${path.replace(/^\/+/, "")}`;
+  return `${SITE_URL}/${encodePostPath(path)}`;
 }
 
 function toRfc822(value: string): string | null {

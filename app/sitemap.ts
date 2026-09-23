@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { getCms } from "@/lib/cms";
+import { encodePostPath, getCms } from "@/lib/cms";
 import { SITE_URL } from "@/lib/cms/config";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     })),
     ...paths.map((path) => ({
-      url: `${SITE_URL}/${path}`,
+      url: `${SITE_URL}/${encodePostPath(path)}`,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),

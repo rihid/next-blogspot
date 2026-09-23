@@ -27,6 +27,26 @@ function stripTrailingSlash(value) {
   return value.replace(/\/+$/, "");
 }
 
+function decodePathname(pathname) {
+  try {
+    return decodeURIComponent(pathname);
+  } catch {
+    return pathname;
+  }
+}
+
+function toPathname(url) {
+  return decodePathname(new URL(url).pathname).replace(/^\/+/, "");
+}
+
+function encodePostPath(path) {
+  return path
+    .replace(/^\/+/, "")
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+}
+
 const blogUrl = stripTrailingSlash(readFlag("blog") ?? process.env.BLOG_URL ?? "");
 const siteUrl = stripTrailingSlash(readFlag("site") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "");
 const shouldProbe = args.includes("--probe");
@@ -56,7 +76,8 @@ async function fetchBloggerInventory() {
     for (const entry of feed.entry ?? []) {
       const alternate = (entry.link ?? []).find((link) => link.rel === "alternate");
       if (!alternate?.href) continue;
-      const path = new URL(alternate.href).pathname.replace(/^\/+/, "");
+      const match = /^\/+(.*)$/.exec(decodePathname(new URL(alternate.href).pathname));
+      const path = match ? match[1] : "";
       if (path.length > 0) paths.add(path);
     }
 
@@ -79,9 +100,8 @@ async function fetchSitemapUrls() {
   }
 
   const xml = await response.text();
-  return new Set(
-    [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]?.trim() ?? ""),
-  );
+  const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]?.trim() ?? "");
+  return { urls: new Set(urls), paths: new Set(urls.map(toPathname)) };
 }
 
 async function probePaths(paths) {
@@ -95,7 +115,9 @@ async function probePaths(paths) {
       if (!path) return;
 
       try {
-        const response = await fetch(`${siteUrl}/${path}`, { redirect: "manual" });
+        const response = await fetch(`${siteUrl}/${encodePostPath(path)}`, {
+          redirect: "manual",
+        });
         if (response.status !== 200) {
           failures.push({ path, status: response.status });
         }
@@ -120,14 +142,12 @@ if (!siteUrl) {
   process.exit(0);
 }
 
-const sitemapUrls = await fetchSitemapUrls();
-const missingPosts = [...paths].filter((path) => !sitemapUrls.has(`${siteUrl}/${path}`));
-const missingLabels = labels.filter(
-  (label) => !sitemapUrls.has(`${siteUrl}/search/label/${encodeURIComponent(label)}`),
-);
+const sitemap = await fetchSitemapUrls();
+const missingPosts = [...paths].filter((path) => !sitemap.paths.has(path));
+const missingLabels = labels.filter((label) => !sitemap.paths.has(`search/label/${label}`));
 
 console.log(`\nSitemap inventory (${siteUrl})`);
-console.log(`  urls ${sitemapUrls.size}`);
+console.log(`  urls ${sitemap.urls.size}`);
 
 let failed = false;
 
