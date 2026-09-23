@@ -102,7 +102,7 @@ export default async function PostPage({ params }: { params: Promise<PostRoutePa
       ) : null}
 
       <div
-        className="prose prose-neutral max-w-none prose-headings:font-semibold prose-a:underline-offset-4"
+        className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-semibold prose-a:underline-offset-4"
         dangerouslySetInnerHTML={{ __html: post.html }}
       />
 

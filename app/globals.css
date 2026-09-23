@@ -123,6 +123,26 @@
     --sidebar-ring: oklch(0.5 0.006 85);
 }
 
+/*
+ * Pagefind ships a light-only stylesheet and injects it after ours, so its
+ * `:root` defaults win on document order. Scoping to the widget container beats
+ * them and lets the values inherit into Pagefind's markup.
+ */
+#pagefind-search {
+    --pagefind-ui-primary: var(--foreground);
+    --pagefind-ui-text: var(--foreground);
+    --pagefind-ui-background: var(--card);
+    --pagefind-ui-border: var(--border);
+    --pagefind-ui-tag: var(--muted);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: var(--radius);
+    --pagefind-ui-font: var(--font-sans);
+}
+
+#pagefind-search .pagefind-ui__search-input::placeholder {
+    opacity: 0.55;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
