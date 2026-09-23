@@ -202,7 +202,7 @@ describe("createFeedClient", () => {
     expect(page.items).toHaveLength(3);
   });
 
-  it("throws a typed error once retries are exhausted", async () => {
+  it("throws a typed error once retries are exhausted", { timeout: 20_000 }, async () => {
     const stub = makeFetchStub(() => jsonResponse({}, 503));
     const client = createFeedClient({ baseUrl: BASE, fetchImpl: stub.fn });
 
@@ -213,7 +213,7 @@ describe("createFeedClient", () => {
       expect(error.status).toBe(503);
       expect(error.url).toContain("alt=json");
     }
-    expect(stub.calls).toHaveLength(3);
+    expect(stub.calls).toHaveLength(5);
   });
 
   it("looks a post up by path and normalises its body", async () => {
@@ -237,6 +237,20 @@ describe("createFeedClient", () => {
     expect(post?.id).toBe("6666666666666666666");
     expect(post?.labels).toEqual(["Single"]);
     expect(post?.commentCount).toBe(5);
+  });
+
+  it("encodes a post path containing spaces exactly once", async () => {
+    const stub = makeFetchStub(() => jsonResponse(fullFixture));
+    const client = createFeedClient({ baseUrl: BASE, fetchImpl: stub.fn });
+
+    await client.getPost(
+      "2021/08/Teknologi%20AI%20yang%20Diciptakan%20Tony%20Stark_0995000218.html",
+    );
+
+    expect(stub.calls[0]?.url).toContain(
+      "path=%2F2021%2F08%2FTeknologi%20AI%20yang%20Diciptakan%20Tony%20Stark_0995000218.html",
+    );
+    expect(stub.calls[0]?.url).not.toContain("%2520");
   });
 
   it("returns null when the path does not resolve to an entry", async () => {

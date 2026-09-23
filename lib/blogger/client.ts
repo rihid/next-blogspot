@@ -22,7 +22,7 @@ import type {
 } from "@/lib/cms/types";
 
 import { BloggerFeedError, createJsonFetcher, type JsonFetcher } from "./http";
-import { permalinkPath } from "./legacy-url";
+import { normalizePostPath, permalinkPath } from "./legacy-url";
 import {
   extractHeroImage,
   makeExcerpt,
@@ -235,12 +235,15 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
   let resolvedBlogId: string | null = configuredBlogId.length > 0 ? configuredBlogId : null;
 
   function endpoint(path: string, params: Record<string, string | number | undefined> = {}): string {
-    const url = new URL(`${baseUrl}${path}`);
-    url.searchParams.set("key", apiKey);
+    const query = [`key=${encodeURIComponent(apiKey)}`];
+
     for (const [name, value] of Object.entries(params)) {
-      if (value !== undefined) url.searchParams.set(name, String(value));
+      if (value !== undefined) {
+        query.push(`${name}=${encodeURIComponent(String(value))}`);
+      }
     }
-    return url.toString();
+
+    return `${baseUrl}${path}?${query.join("&")}`;
   }
 
   async function ensureBlogId(): Promise<string | null> {
@@ -344,7 +347,7 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
     },
 
     async getPost(path) {
-      const cleanPath = path.replace(/^\/+/, "").trim();
+      const cleanPath = normalizePostPath(path);
       if (!enabled || cleanPath.length === 0) return null;
 
       const blogId = await ensureBlogId();

@@ -24,7 +24,7 @@ import type {
 } from "@/lib/cms/types";
 
 import { BloggerFeedError, createJsonFetcher, type JsonFetcher } from "./http";
-import { permalinkPath } from "./legacy-url";
+import { normalizePostPath, permalinkPath } from "./legacy-url";
 import {
   extractHeroImage,
   makeExcerpt,
@@ -240,14 +240,15 @@ export function createFeedClient(options: FeedClientOptions): FeedClient {
     },
 
     async getPost(path) {
-      const cleanPath = path.replace(/^\/+/, "").trim();
+      const cleanPath = normalizePostPath(path);
       if (!baseUrl || cleanPath.length === 0) return null;
 
       const url = new URL(`${baseUrl}/feeds/posts/default`);
       url.searchParams.set("alt", "json");
-      url.searchParams.set("path", `/${cleanPath}`);
 
-      const document = await requestJson(url.toString(), ["posts"]);
+      const requestUrl = `${url.toString()}&path=${encodeURIComponent(`/${cleanPath}`)}`;
+
+      const document = await requestJson(requestUrl, ["posts"]);
       const entry = firstEntryOf(document);
       if (!entry) return null;
 
