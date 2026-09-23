@@ -35,7 +35,7 @@ export default async function HomePage() {
           <code className="rounded-sm bg-muted px-1 py-0.5 font-mono text-[0.85em]">.env.local</code> to point at your blog.
         </p>
       ) : (
-        <section className="grid gap-4 sm:grid-cols-2">
+        <section className="grid items-start gap-4 sm:grid-cols-2">
           {posts.items.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}

@@ -25,7 +25,7 @@ export default async function PostsPage({ searchParams }: { searchParams: Search
       {posts.items.length === 0 ? (
         <p className="text-muted-foreground">Nothing published yet.</p>
       ) : (
-        <section className="grid gap-4 sm:grid-cols-2">
+        <section className="grid items-start gap-4 sm:grid-cols-2">
           {posts.items.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}

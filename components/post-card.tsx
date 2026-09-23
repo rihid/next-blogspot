@@ -31,7 +31,7 @@ export function PostCard({ post }: { post: PostSummary }) {
             width={1200}
             height={630}
             sizes="(max-width: 640px) 100vw, 50vw"
-            className="h-auto w-full object-cover"
+            className="aspect-[1200/630] w-full object-cover"
           />
         </Link>
       ) : null}

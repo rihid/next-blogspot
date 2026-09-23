@@ -53,11 +53,11 @@ export default function RootLayout({
           <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-sm">
             <nav
               aria-label="Main"
-              className="mx-auto flex w-full max-w-4xl items-center justify-between gap-x-6 gap-y-2 px-4 py-3 text-sm sm:px-6"
+              className="mx-auto flex w-full max-w-4xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3 text-sm sm:px-6"
             >
               <Link
                 href="/"
-                className="flex items-center gap-2 font-semibold tracking-tight text-foreground"
+                className="flex items-center gap-2 font-semibold tracking-tight whitespace-nowrap text-foreground"
               >
                 <Image
                   src="/mark.svg"
@@ -70,13 +70,13 @@ export default function RootLayout({
                 next-blogspot
               </Link>
 
-              <div className="flex items-center gap-1 sm:gap-2">
-                <ul className="flex items-center gap-x-4 sm:gap-x-5">
+              <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                <ul className="flex flex-wrap items-center gap-x-4 sm:gap-x-5">
                   {NAV_LINKS.map((link) => (
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-muted-foreground transition-colors hover:text-foreground"
+                        className="whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground"
                       >
                         {link.label}
                       </Link>
