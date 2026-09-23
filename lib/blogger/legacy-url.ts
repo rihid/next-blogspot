@@ -93,11 +93,41 @@ function safeUrl(rawUrl: string): URL | null {
   }
 }
 
-/** Blog-relative path for a permalink, e.g. `2024/05/slug.html`. */
+function decodePathname(pathname: string): string {
+  try {
+    return decodeURIComponent(pathname);
+  } catch {
+    return pathname;
+  }
+}
+
+/** Blog-relative, decoded path for a permalink, e.g. `2024/05/slug.html`. */
 export function permalinkPath(href: string): string | null {
   const url = safeUrl(href);
   if (!url) return null;
 
-  const path = url.pathname.replace(/^\/+/, "");
+  const path = decodePathname(url.pathname).replace(/^\/+/, "");
   return path.length > 0 ? path : null;
+}
+
+/**
+ * Percent-encode a decoded post path for use in a URL. Blogger permalinks can
+ * contain spaces and non-ASCII characters, and the path must be encoded exactly
+ * once at every output boundary (hrefs, sitemap, feed lookups).
+ */
+export function encodePostPath(path: string): string {
+  return path
+    .replace(/^\/+/, "")
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+}
+
+/**
+ * Normalise a post path to the canonical decoded form. Route params arrive
+ * percent-encoded, `permalinkPath` returns decoded — everything that consumes a
+ * path goes through here so encoding can never be applied twice.
+ */
+export function normalizePostPath(path: string): string {
+  return decodePathname(path.trim()).replace(/^\/+/, "");
 }

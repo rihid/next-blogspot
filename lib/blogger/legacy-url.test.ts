@@ -5,8 +5,11 @@ import {
   buildPageHref,
   buildPostHref,
   buildPostPath,
+  encodePostPath,
   ensureHtmlSuffix,
+  normalizePostPath,
   parsePostPath,
+  permalinkPath,
   stripHtmlSuffix,
   stripMobileParam,
 } from "./legacy-url";
@@ -34,6 +37,54 @@ describe("parsePostPath", () => {
     expect(parsePostPath("2024/5/short-month.html")).toBeNull();
     expect(parsePostPath("2024/05/")).toBeNull();
     expect(parsePostPath("")).toBeNull();
+  });
+
+  it("keeps decoded spaces and non-ASCII characters in the slug", () => {
+    expect(parsePostPath("2021/08/Teknologi AI.html")).toEqual({
+      year: "2021",
+      month: "08",
+      slug: "Teknologi AI.html",
+    });
+    expect(parsePostPath("2024/01/Café déjà vu.html")).toEqual({
+      year: "2024",
+      month: "01",
+      slug: "Café déjà vu.html",
+    });
+  });
+});
+
+describe("permalinkPath", () => {
+  it("decodes a percent-encoded permalink into a readable path", () => {
+    expect(permalinkPath("https://blog.example.com/2021/08/Teknologi%20AI.html")).toBe(
+      "2021/08/Teknologi AI.html",
+    );
+  });
+
+  it("keeps plain paths unchanged", () => {
+    expect(permalinkPath("https://blog.example.com/2024/05/slug.html")).toBe("2024/05/slug.html");
+  });
+});
+
+describe("encodePostPath", () => {
+  it("encodes every segment exactly once, whatever the path contains", () => {
+    expect(encodePostPath("2021/08/Teknologi AI.html")).toBe("2021/08/Teknologi%20AI.html");
+    expect(encodePostPath("/2024/05/slug.html")).toBe("2024/05/slug.html");
+    expect(encodePostPath("2024/01/Café déjà vu.html")).toBe(
+      "2024/01/Caf%C3%A9%20d%C3%A9j%C3%A0%20vu.html",
+    );
+  });
+});
+
+describe("normalizePostPath", () => {
+  it("decodes route params so encoding is never applied twice", () => {
+    expect(normalizePostPath("2021/08/Teknologi%20AI.html")).toBe("2021/08/Teknologi AI.html");
+    expect(normalizePostPath("/2024/05/slug.html")).toBe("2024/05/slug.html");
+    expect(normalizePostPath("2024/01/Caf%C3%A9.html")).toBe("2024/01/Café.html");
+  });
+
+  it("leaves decoded or escape-free paths untouched", () => {
+    expect(normalizePostPath("2021/08/Teknologi AI.html")).toBe("2021/08/Teknologi AI.html");
+    expect(normalizePostPath("100%/slug.html")).toBe("100%/slug.html");
   });
 });
 
