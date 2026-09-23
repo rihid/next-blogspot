@@ -1,4 +1,4 @@
-import { getCms, type Comment } from "@/lib/cms";
+import { getCms, type CmsProvider, type Comment } from "@/lib/cms";
 import { GISCUS, GISCUS_ENABLED } from "@/lib/cms/config";
 import { formatDisplayDate } from "@/lib/seo/metadata";
 
@@ -19,17 +19,27 @@ function LegacyComment({ comment }: { comment: Comment }) {
         ) : null}
       </div>
       <div
-        className="prose prose-sm prose-neutral max-w-none"
+        className="prose prose-sm prose-neutral dark:prose-invert max-w-none"
         dangerouslySetInnerHTML={{ __html: comment.html }}
       />
     </li>
   );
 }
 
+async function loadCommentHistory(cms: CmsProvider, postId: string): Promise<Comment[]> {
+  if (!cms.capabilities.commentHistory || !cms.listComments) return [];
+
+  try {
+    return await cms.listComments(postId);
+  } catch {
+    // Comment history is supplementary: a transient Blogger failure must never
+    // break the article itself, especially during a build.
+    return [];
+  }
+}
+
 export async function Comments({ postId }: { postId: string }) {
-  const cms = getCms();
-  const comments =
-    cms.capabilities.commentHistory && cms.listComments ? await cms.listComments(postId) : [];
+  const comments = await loadCommentHistory(getCms(), postId);
 
   return (
     <section className="flex flex-col gap-6">

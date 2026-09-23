@@ -58,7 +58,9 @@ Consequences:
 
 ## Why `PRERENDER_POST_LIMIT` exists
 
-Prerendering a whole blog at build time fires hundreds of Blogger requests in parallel. In practice that produces transient `fetch failed` errors, and a single failure aborts the entire build. The limit keeps the build small and reliable; everything else renders on demand and is cached by ISR with the same tags. Set it to `0` to prerender nothing.
+Prerendering a whole blog at build time fires hundreds of Blogger requests in parallel. In practice that produces transient `fetch failed` errors, and a single failure aborts the entire build. The limit keeps the build small and reliable; everything else renders on demand and is cached by ISR with the same tags.
+
+**If your build still fails intermittently, set `PRERENDER_POST_LIMIT=0`.** The build then touches Blogger only for the sitemap and the homepage, and every post is rendered on demand and cached by ISR. That is the most robust configuration and the recommended one for CI and for blogs behind a CDN that throttles bursts.
 
 ---
 

@@ -8,9 +8,9 @@
 
 import { REVALIDATE_TTL } from "@/lib/cms/config";
 
-const DEFAULT_CONCURRENCY = 3;
-const MAX_RETRIES = 2;
-const BASE_BACKOFF_MS = 100;
+const DEFAULT_CONCURRENCY = 2;
+const MAX_RETRIES = 4;
+const BASE_BACKOFF_MS = 400;
 
 export class BloggerFeedError extends Error {
   /** HTTP status, or `0` for network-level failures. */
@@ -79,9 +79,12 @@ function createLimiter(concurrency: number): <T>(task: () => Promise<T>) => Prom
   };
 }
 
+/** Shared process-wide so a build cannot burst Blogger with parallel connections. */
+const sharedLimiter = createLimiter(DEFAULT_CONCURRENCY);
+
 export function createJsonFetcher(options: JsonFetcherOptions = {}): JsonFetcher {
   const fetchImpl = options.fetchImpl ?? fetch;
-  const runLimited = createLimiter(options.concurrency ?? DEFAULT_CONCURRENCY);
+  const runLimited = options.concurrency ? createLimiter(options.concurrency) : sharedLimiter;
 
   return async function requestJson<T>(url: string, tags: string[]): Promise<T> {
     return runLimited(async () => {
