@@ -1,7 +1,7 @@
 /**
  * Keyless Blogger public-feed client.
  *
- * Contract highlights (see `PRD.md` section 6):
+ * Contract highlights (see the Blogger constraints cheat sheet in `AGENTS.md`):
  * - Always sends `alt=json`; without it a FeedBurner-enabled blog can 302 to
  *   plain-HTTP FeedBurner and drop query params.
  * - Follows `link[rel=next]` verbatim. Those hrefs point at `www.blogger.com`,

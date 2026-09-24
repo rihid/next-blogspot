@@ -10,7 +10,7 @@ All documentation, code comments, and commit messages are in **English**.
 
 A headless blog frontend for Google Blogger/Blogspot built with Next.js 15 (App Router, React Server Components). Blogger is the CMS; this repo is only the frontend plus a data layer that reads from Blogger.
 
-The authoritative plan is [`PRD.md`](./PRD.md). Read it before making architectural changes — it contains the verified Blogger constraints that this codebase must respect.
+`README.md` is the product documentation. The verified Blogger constraints this codebase must respect live in the [cheat sheet below](#blogger-constraints-cheat-sheet), and the hard rules in [Invariants](#invariants-do-not-violate). Read both before making architectural changes. There is no separate PRD in this repository — the long-form plan is kept with the maintainer.
 
 ---
 
@@ -97,7 +97,7 @@ packages/create-next-blogspot # scaffolder; its template/ is generated, never ed
 - Post bodies are raw Blogger-flavored HTML and must be normalized and sanitized.
 - Images live on `*.googleusercontent.com` / `*.bp.blogspot.com`; sizing uses Google's URL segments, and Next image optimization is disabled by default for that reason.
 
-Full detail: [`PRD.md`](./PRD.md) §6.
+The authoritative reference is Google's own [Blogger API v3 reference](https://developers.google.com/blogger/docs/3.0/reference) and its [discovery document](https://www.googleapis.com/discovery/v1/apis/blogger/v3/rest).
 
 ---
 
@@ -114,6 +114,16 @@ Full detail: [`PRD.md`](./PRD.md) §6.
 
 ## Where to start
 
-See [`PRD.md`](./PRD.md) §20 (Roadmap). **Phases 0–2 are delivered**: data layer, legacy routes, listings, SEO suite, revalidation, hybrid comments, Pagefind search, scaffolder, and docs. **Phase 4 (template completion) is next.**
+The template is feature-complete: data layer, legacy routes, listings, SEO suite, revalidation, hybrid comments, Pagefind search, theming, migration checker, scaffolder and docs. Start from [`README.md`](./README.md) for the feature and API overview.
 
-Owner OAuth — draft preview and publish-from-frontend — is **deferred on purpose**; see [PRD Appendix A](./PRD.md). The template ships with **no authentication surface**: Blogger's backoffice is the authoring UI. Do not add auth or token-storage code without reading that appendix first.
+### Deferred: owner OAuth (draft preview + publishing)
+
+Deliberately not implemented. The template ships with **no authentication surface** — Blogger's backoffice is the authoring UI. Before adding any auth or token-storage code, know these constraints:
+
+- Writes need the full `https://www.googleapis.com/auth/blogger` scope, which is **sensitive**: it requires a Google consent screen and, for public use, verification.
+- A project whose consent screen is *external* and in **"Testing"** status receives refresh tokens that **expire after 7 days**. The name/email/profile exception does not cover Blogger scopes, so it always applies.
+- **Service accounts cannot access Blogger** (they cannot be added as a blog author), so owner OAuth is the only path.
+- Refresh tokens are issued only on first authorization; re-issuing one needs `prompt=consent`. Limit: 100 per account per client ID, oldest silently invalidated.
+- Drafts are invisible to API keys, and `posts.getByPath` has **no** `status`/`future` parameter — preview must fetch by **post id** with `view=ADMIN`.
+- `posts.update` (PUT) replaces the resource and clears omitted fields such as `labels` — edit with a read-merge-`PATCH`.
+- In Next.js 15.5.25 a draft-mode request bypasses the whole fetch cache, but `revalidateTag`/`revalidatePath` are **not** draft-scoped — never call them from a preview path.
