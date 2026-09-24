@@ -266,6 +266,14 @@ describe("createFeedClient", () => {
     await expect(client.getPost("2024/05/missing.html")).resolves.toBeNull();
   });
 
+  it("returns null when Blogger answers 404 for an unknown permalink", async () => {
+    const stub = makeFetchStub(() => jsonResponse({}, 404));
+    const client = createFeedClient({ baseUrl: BASE, fetchImpl: stub.fn });
+
+    await expect(client.getPost("2019/12/nope.html")).resolves.toBeNull();
+    expect(stub.calls).toHaveLength(1);
+  });
+
   it("enumerates labels through a max-results=0 request", async () => {
     const labelsDocument = {
       feed: {

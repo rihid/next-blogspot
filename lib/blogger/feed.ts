@@ -248,7 +248,16 @@ export function createFeedClient(options: FeedClientOptions): FeedClient {
 
       const requestUrl = `${url.toString()}&path=${encodeURIComponent(`/${cleanPath}`)}`;
 
-      const document = await requestJson(requestUrl, ["posts"]);
+      let document: FeedDocumentResponse;
+      try {
+        document = await requestJson(requestUrl, ["posts"]);
+      } catch (error) {
+        // A permalink Blogger does not know about answers 404; that is a missing
+        // post, not a failure, so the route can render its not-found state.
+        if (error instanceof BloggerFeedError && error.status === 404) return null;
+        throw error;
+      }
+
       const entry = firstEntryOf(document);
       if (!entry) return null;
 
