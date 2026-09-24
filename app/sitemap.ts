@@ -6,6 +6,8 @@ import { SITE_URL } from "@/lib/cms/config";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const cms = getCms();
   const [paths, labels] = await Promise.all([cms.getAllPostPaths(), cms.listLabels()]);
+  const pages =
+    cms.capabilities.pages && cms.listPages ? (await cms.listPages()).items : [];
 
   return [
     {
@@ -18,6 +20,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.9,
     },
+    ...pages.map((page) => ({
+      url: `${SITE_URL}/${encodePostPath(page.path)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
     ...labels.map((label) => ({
       url: `${SITE_URL}/search/label/${encodeURIComponent(label.name)}`,
       changeFrequency: "weekly" as const,
