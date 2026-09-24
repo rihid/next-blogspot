@@ -3,10 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function Loading() {
   return (
     <div className="flex flex-col gap-8" aria-busy="true" aria-label="Loading">
-      <div className="flex flex-col gap-3">
-        <Skeleton className="h-9 w-2/3" />
-        <Skeleton className="h-4 w-1/2" />
-      </div>
+      <Skeleton className="h-9 w-2/3" />
       <div className="grid gap-4 sm:grid-cols-2">
         {Array.from({ length: 4 }).map((_, index) => (
           <div key={index} className="flex flex-col gap-3 rounded-lg border border-border p-4">

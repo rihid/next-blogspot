@@ -82,6 +82,7 @@ packages/create-next-blogspot # scaffolder; its template/ is generated, never ed
 12. **Generated output is never edited or committed:** `public/pagefind/` (Pagefind index) and `packages/create-next-blogspot/template/` (scaffolder snapshot). The latter is produced by `scripts/prepare-template.mjs`.
 13. **`shadcn` is a runtime dependency.** `app/globals.css` imports `shadcn/tailwind.css`; moving the package to `devDependencies` breaks production installs.
 14. **Placeholder marks use `dark:invert`.** `public/mark.svg` and `public/placeholder.svg` ship a fixed ink colour because `currentColor` does not inherit into an `<img>`; the class is what makes them readable in dark mode.
+15. **No root `app/loading.tsx`.** A root Suspense boundary streams the shell and commits a `200` status before `notFound()` can set `404`, turning missing post URLs into soft-404s. Scope loading skeletons to segments that never call `notFound()` (`app/posts/loading.tsx`).
 
 ---
 
