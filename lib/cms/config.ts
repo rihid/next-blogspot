@@ -66,3 +66,10 @@ export const GISCUS = {
 } as const;
 
 export const GISCUS_ENABLED = GISCUS.repo.length > 0 && GISCUS.repoId.length > 0;
+
+export const DEFAULT_REPOSITORY_URL = "https://github.com/rihid/next-blogspot";
+
+/** Public repository, linked from the Documentation card on the home page. */
+export const REPOSITORY_URL = (
+  process.env.NEXT_PUBLIC_REPOSITORY_URL ?? DEFAULT_REPOSITORY_URL
+).replace(/\/+$/, "");

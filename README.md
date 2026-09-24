@@ -70,6 +70,7 @@ Open <http://localhost:3000>.
 | `REVALIDATE_TTL` | — | ISR fallback TTL in seconds. Default `3600`. |
 | `PRERENDER_POST_LIMIT` | — | Newest posts prerendered at build time; the rest render on demand via ISR. Default `25`. Set `0` to prerender nothing. |
 | `NEXT_PUBLIC_GISCUS_*` | — | Giscus (new comments). Values from <https://giscus.app>. |
+| `NEXT_PUBLIC_REPOSITORY_URL` | — | Public repository, linked from the Documentation card on the home page. |
 
 ---
 
